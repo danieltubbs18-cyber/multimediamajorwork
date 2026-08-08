@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+<meta charset="UTF-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COOKBOOK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Futura:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    --paper: #ffffff;
+    --card: #ffffff;
+    --ink: #2b2620;
+    --ink-soft: #6b6255;
+    --rule: #d8cbb2;
+    --sage-dim: #ffffff;
+    --radius: 3px;
+    --nav-h: 68px;
+    --text: var(--ink);
+    --text-mid: var(--ink-soft);
+    --accent: #a8471f;
+    --accent-pale: var(--sage-dim);
+    --border: var(--rule);
+    --radius-sm: var(--radius);
+    --bg-subtle: var(--sage-dim);
+}
+body {
+    font-family: 'Futura', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+}
+h1, h2, h3 {
+    font-family: 'Futura', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--nav-h);
+    background: rgba(145, 179, 228, 0.999);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    gap: 2rem;
+}
+.nav-logo {
+    font-family: 'Futura';
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+}
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: auto;
+    list-style: none;
+}
+.nav-links a {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-mid);
+    padding: 0.45rem 0.9rem;
+    border-radius: 99px;
+    transition: background 0.3s, color 0.3s;
+}
+.nav-links a:hover, .nav-links a.active {
+    background: var(--accent-pale);
+    color: var(--text);
+}
+
+.hero { 
+    padding: 7rem 5% 5rem;
+    max-width: 960px;
+}
+
+.hero h1 {
+ font-size: clamp(2.5rem, 5vw, 4rem);
+ font-weight: 500;
+ line-height: 1.05;
+ margin-bottom: 1.25rem;
+}
+
+.hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+}
+
+.hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    font-weight: 300;
+    max-width: 520px;
+}
+
+section {
+    padding: 5rem 5%;
+    scroll-margin-top: var(--nav-h);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+}
+
+.section-header .count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    margin-left: auto;
+}
+
+.section-header h2{
+    font-size: 2.5rem;
+    font-weight: 500;
+}
+
+footer {
+    padding: 2rem 5%;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    font-weight: 300;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.recipe-card {
+    background: rgba(145, 179, 228, 0.999);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+.recipe-card.open {
+    transform: rotate(-0.3deg);
+    box-shadow: 5px 5px 0 rgba(43,38,32,0.12);
+}
+
+.recipe-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: var(--sage-dim);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    z-index: 2;
+}
+.recipe-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.recipe-body {
+    padding: 1rem 1.15rem 1.1rem 1.15rem;
+    position: relative;
+    z-index: 2;
+}
+.recipe-name {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: 'Futura', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+}
+
+.chevron {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+}
+.recipe-card.open .chevron { transform: rotate(180deg); }
+
+.recipe-desc {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.55;
+    margin-bottom: 0.9rem;
+}
+
+.recipe-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    background: var(--bg-subtle);
+    padding: 0 1.15rem;
+}
+.recipe-card.open .recipe-details {
+    max-height: 2000px;
+    padding: 1rem 1.15rem 1.25rem;
+}
+.recipe-details h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 0.75rem 0 0.4rem;
+}
+.recipe-details h4:first-child { margin-top: 0; }
+.recipe-details ul, .recipe-details ol {
+    padding-left: 1.3rem;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+.recipe-details li { margin-bottom: 0.2rem; }
+
+.video-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 1.25rem; 
+}
+.video-card {
+  background: rgba(145, 179, 228, 0.999); 
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm); 
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease; 
+  cursor: pointer;
+}
+.video-card:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 24px rgba(26,25,22,0.08); 
+}
+.video-thumb { 
+    width: 100%; 
+    aspect-ratio: 16/9; 
+    background: var(--accent-pale); 
+    display: flex; align-items: center; 
+    justify-content: center; 
+    font-size: 3rem; 
+    position: relative;
+ }
+
+ .video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.play-badge { 
+    position: absolute; 
+    bottom: 0.75rem; 
+    right: 0.75rem; 
+    background: var(--text); 
+    color: white; font-size: 0.7rem; 
+    font-weight: 600; 
+    letter-spacing: 0.05em; 
+    padding: 0.3rem 0.65rem; 
+    border-radius: 99px; 
+}
+.video-info { 
+    padding: 0.9rem 1.1rem 1rem; 
+}
+.video-title { 
+    font-family: 'Futura';
+    font-size: 1.1rem; font-weight: 600; 
+    letter-spacing: -0.01em; 
+    margin-bottom: 0.25rem; 
+}
+
+.video-modal {
+    position: fixed; inset: 0;
+    background: rgba(43,38,32,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+.video-modal-inner {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1rem;
+    max-width: 400px;
+    width: 100%;
+    position: relative;
+}
+.video-modal-inner video {
+    width: 100%;
+    display: block;
+    border-radius: var(--radius);
+    background: #000;
+}
+.video-modal-close {
+    position: absolute;
+    top: -0.9rem; right: -0.9rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.video-modal-title {
+    font-family: 'Futura';
+    font-weight: 600;
+    margin-top: 0.75rem;
+    padding: 0 0.25rem;
+}
+</style>
+    </head>
+<body>
+    <nav>
+        <a href="#" class="nav-logo">HSC Multimedia - Student: 39163063</a>
+        <ul class="nav-links">
+            <li><a href="#RECIPES">Recipes</a></li>
+            <li><a href="#VIDEOS">Videos</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <h1>Dan's Desserts<em> By Student: 39163063</em></h1>
+        <p class="hero-sub">Inspired deserts and tutorials to go along with them.</p>
+    </div>
+
+    <section id="RECIPES">
+       <div class="section-header">
+        <h2>RECIPES</h2>
+        </div>
+        <div class="recipe-grid" id="recipe-grid"></div>
+    </section>
+
+<section id="VIDEOS">
+    <div class="section-header">
+      <h2>VIDEOS</h2>
+      <span class="count" id="video-count"></span>
+    </div>
+    <div class="video-grid" id="video-grid"></div>
+</section>
+
+    <footer>&copy; 2026 Cookbook</footer>
+
+   <script>
+    function toggleRecipe(id) {
+      const card = document.getElementById('card-' + id);
+      const wasOpen = card.classList.contains('open');
+      document.querySelectorAll('.recipe-card.open').forEach(c => c.classList.remove('open'));
+      if (!wasOpen) card.classList.add('open');
+    }
+
+    const recipes = [
+        {
+            id: 1,
+            name: 'Mini Caramel Tarts',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="minicaramel.jpg" height="200">',
+            ingredients: ['250g plain flour', '115g caster sugar', '115g butter', '1 egg', '450g caster sugar', '185ml cream', '40g unsalted butter', 'Milk chocolate chips'],
+            steps: [' Combine the flour and caster sugar, then cut in the butter until it resembles coarse crumbs. Add the egg and process until it comes together, then turn out and knead into a smooth dough. Chill for 20 minutes. Roll out the dough and cut into small circles, then press into a patty tin. Bake at 200°C for 15 minutes.',
+                     ' Combine the sugar and water in a saucepan over high heat and cook for about 15 minutes, until golden. Remove from the heat and stir in the cream and butter until smooth. Spoon the caramel into the baked pastry cases, decorate with chocolate chips, and chill for an hour before serving.'],
+        },
+        {
+            id: 2,
+            name: 'Creme Catalana',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="cremecatalan.jpg" height="200">',
+            ingredients: ['625ml cream', '170ml milk', '4 tablespoons brown sugar', '2.5 tablespoons brown sugar', '2 teaspoons vanilla extract', '2 cinnamon sticks', '1 peel of an orange', '1 peel of a lemon', '6 egg yolks'],
+            steps: ['Preheat your oven to 140°C. In a saucepan over medium heat, combine the milk, cream, vanilla extract, orange and lemon peel, and cinnamon. Bring to a simmer, then remove from the heat. In a separate bowl, whisk the egg yolks and caster sugar together until combined. Strain the warm cream mixture into the egg yolk mixture, whisking continuously as you pour. Divide the mixture evenly among 125ml pots, then arrange them in a large roasting tin. Pour hot water into the tin so it reaches halfway up the sides of the pots, and cover the entire tin with foil. Bake for 30–35 minutes. Remove the pots from the water bath and let them cool, then chill in the fridge for at least 2 hours.',
+            'When ready to serve, set your oven to its highest temperature using the top grill setting. Arrange the chilled pots on a baking tray, sprinkle brown sugar evenly over each one, and place under the grill until the sugar melts and turns a deep golden brown. Serve.'],
+        },
+        {
+            id: 3,
+            name: 'Chocolate Cookies',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="cookies.jpg" height="200">',
+            ingredients: ['350g brown sugar', '250g unsalted butter', '310g plain flour', '1 teaspoon vanilla extract', '2 eggs beaten', '65g cocoa powder', '2 teaspoons baking soda', '2 teaspoons salt', 'Milk chocolate chips'],
+            steps: ['Preheat your oven to 180°C. Beat the sugar and butter together until well combined. Mix in the vanilla and eggs. Sift the flour, baking powder, cocoa powder, and salt into the mixture and stir until fully incorporated. Drop even portions of the batter onto a greased baking tray, then bake for 15–20 minutes. Serve.'],
+        },
+        {
+            id: 4,
+            name: 'Butterfly Cupcakes',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="cupcakes.jpg" height="200">',
+            ingredients: ['180g plain flour', '150g sugar', '125g unsalted butter', '2 eggs', '3 teaspoons baking powder', '125ml milk', '1 teaspoon vanilla extract', 'Cream', 'Berries', 'Icing sugar'],
+            steps: ['Preheat your oven to 180°C. Sift the flour and baking powder into a mixing bowl, then add the butter, vanilla, sugar, eggs, and milk. Beat with an electric mixer until well combined. Line a 12-hole muffin tin with cupcake wrappers and divide the batter evenly among the cases. Bake for 17–20 minutes, or until golden on top.',
+            'Once cooled, slice the top off each cupcake and cut each top in half. Pipe or spoon cream onto the cut cakes and top with fresh berries. Rest the halved tops on top at an angle (like butterfly wings), then dust with icing sugar before serving.'],
+        },
+        {
+            id: 5,
+            name: 'Orange Poppy Seed Cake',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="poppyseedcake.jpg" height="200">',
+            ingredients: ['250g plain flour, 115g caster sugar, 115g butter, 1 egg, 450g caster sugar, 185ml cream, 40g unsalted butter, Milk chocolate chips'],
+            steps: ['Preheat your oven to 180°C. In a large bowl, whisk together the flour, baking powder, salt, and poppy seeds until well blended. In a separate medium bowl, combine the orange zest, orange juice, oil, eggs, sugar, and vanilla, whisking thoroughly. Add the wet ingredients to the dry ingredients and whisk until the batter is smooth with no lumps. Transfer the batter to your prepared loaf tin and bake for 50–60 minutes. Let the cake cool in the tin for about 10 minutes, then move it to a wire rack to cool.',
+            'Combine all the frosting ingredients in a bowl and combine until smooth. Once the loaf has cooled completely, spread the frosting evenly over the top. Finish with a sprinkle of freshly grated orange zest.'],
+        },
+        {
+            id: 6,
+            name: 'Chocolate Slice',
+            desc: 'Click to see ingredients and steps.',
+            imgClass: '<img src="chocolate-slice.jpg" height="200">',
+            ingredients: ['125g butter', '220g brown sugar', '125g self-rising flour', '1 egg', '2 tablespoons cacao', '50g coconut', '1 teaspoon vanilla', 'Pinch of salt'],
+            steps: ['Preheat your oven to 180°C. Melt butter and mix in sugar and egg. Add vanilla and cacao, then mix well. Add flour, salt and coconut. Spread the mixture in a greased pan and bake for 20 minutes.', 'In a bowl, mix icing sugar and milk until smooth.'],
+        },
+    ];
+
+    function renderRecipes() {
+      const grid = document.getElementById('recipe-grid');
+      grid.innerHTML = recipes.map(r => `
+        <div class="recipe-card" id="card-${r.id}">
+          <div class="recipe-img">${r.imgClass}</div>
+          <div class="recipe-body" onclick="toggleRecipe(${r.id})">
+            <div class="recipe-name">${r.name} <span class="chevron">▾</span></div>
+            <div class="recipe-desc">${r.desc}</div>
+          </div>
+          <div class="recipe-details">
+            <h4>Ingredients</h4>
+            <ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+            <h4>Steps</h4>
+            <ol>${r.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function saveRecipes() {
+        localStorage.setItem('ok_recipes', JSON.stringify(recipes));
+    }
+
+
+const tutorials = [
+  {
+    id: 1,
+    title: 'Mini Caramel Tarts',
+    url: 'minicaramel.mp4',
+    img: 'minicaramel.jpg',
+  },
+  {
+    id: 2,
+    title: 'Creme Catalana',
+    url: 'cremecatalana.mp4',
+    img: 'cremecatalan.jpg',
+  },
+    {
+    id: 3,
+    title: 'Chocolate Cookies',
+    url: 'cookies.mp4',
+    img: 'cookies.jpg',
+  },
+  {
+    id: 4,
+    title: 'Butterfly Cupcakes',
+    url: 'cupcakes.mp4',
+    img: 'cupcakes.jpg',
+  }, 
+ {
+    id: 5,
+    title: 'Orange Poppy Seed Cake',
+    url: 'cake.mp4',
+    img: 'poppyseedcake.jpg',
+  },
+  {
+    id: 6,
+    title: 'Chocolate Slice',
+    url: 'chocolate-slice.mp4',
+    img: 'chocolate-slice.jpg',
+  },
+
+];
+
+function renderTutorials() {
+  const grid = document.getElementById('video-grid');
+  document.getElementById('video-count').textContent = String(tutorials.length).padStart(2, '0') + ' total';
+  if (tutorials.length === 0) {
+    grid.innerHTML = '<p>Video tutorials coming soon.</p>';
+    return;
+  }
+  grid.innerHTML = tutorials.map(t => `
+    <div class="video-card" onclick="openTutorial(${t.id})">
+      <div class="video-thumb">
+        <img src="${t.img}" alt="${t.title}">
+        <span class="play-badge">▶ WATCH</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">${t.title}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function openTutorial(id) {
+  const t = tutorials.find(x => x.id === id);
+  if (!t || !t.url) { alert('Video coming soon!'); return; }
+
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.innerHTML = `
+    <div class="video-modal-inner">
+      <button class="video-modal-close" aria-label="Close">✕</button>
+      <video src="${t.url}" controls autoplay></video>
+      <div class="video-modal-title">${t.title}</div>
+    </div>
+  `;
+  modal.addEventListener('click', e => {
+    if (e.target === modal || e.target.classList.contains('video-modal-close')) {
+      modal.remove();
+    }
+  });
+  document.body.appendChild(modal);
+}
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        ['RECIPES','VIDEOS'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && window.scrollY > el.offsetTop - 120) {
+                current = id;
+            }
+        });
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+    });
+
+    saveRecipes();
+    renderRecipes();
+    renderTutorials();
+</script>
+</body>
+
+</html>
